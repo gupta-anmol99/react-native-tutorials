@@ -1,16 +1,33 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Text, View, StyleSheet, FlatList } from "react-native";
 import ExpenseContext from "../store/ExpenseContext";
 import RecordContainer from "../components/RecordContainer";
 import TotalExpense from "../components/TotalExpense";
+import { fetchExpenses } from "../utils/http";
+import Loading from "../components/Loading";
 
 const Recent = () => {
+  const { expenses, initExpenses } = useContext(ExpenseContext);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const getExpensesFromBase = async () => {
+      const response = await fetchExpenses();
+      initExpenses(response);
+      setLoading(false);
+    };
+
+    getExpensesFromBase();
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
+
   const today = new Date();
 
   const dd = Number.parseInt(String(today.getDate()).padStart(2, "0"));
   const mm = String(today.getMonth() + 1).padStart(2, "0");
-
-  const { expenses } = useContext(ExpenseContext);
 
   const recentExp = expenses.filter((expense) => {
     return expense.mm === mm && Number.parseInt(expense.dd) >= dd - 7;
@@ -26,7 +43,7 @@ const Recent = () => {
       </View>
       <View style={styles.listContainer}>
         <FlatList
-          data={expenses}
+          data={recentExp}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => renderList(item)}
         />
