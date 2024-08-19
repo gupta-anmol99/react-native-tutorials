@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyDrslJG9WlmKcEzn4ljePU54gvZD-hkGbE";
+const API_KEY = "";
 const getMapPreview = (lat, lang) => {
   const mapPreviewUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lang}&zoom=14&size=400x200&maptype=roadmap&markers=color:red%7Clabel:X%7C${lat},${lang}&key=${API_KEY}`;
 
